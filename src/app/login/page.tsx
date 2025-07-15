@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import React, { useState, useMemo, useCallback } from "react";
 import Form from "../../ui/form";
 import { FormField, FormData } from "@/lib/types";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/features/userSlice";
 
 // Project: Dashboard APP
 // Module: Authentication
@@ -21,6 +23,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Memoized the fields array so it doesn't get recreated on every render
   const loginFields: FormField[] = useMemo(
@@ -53,8 +56,11 @@ export default function LoginPage() {
         setError("");
         const response = await axios.post("/api/users/login", data);
         console.log("Login successful!", response.data);
+        // Set the user in the Redux store
+        dispatch(setUser(response.data.user));
+
         // Redirect to user's specific profile page
-        router.push(`/profile/${response.data.userId}`);
+        router.push(`/profile/${response.data.user._id}`);
       } catch (error: any) {
         setError(error.response?.data?.error || "Something went wrong!");
         console.log(
@@ -80,12 +86,17 @@ export default function LoginPage() {
       />
 
       <div className="text-center mt-4">
-        <Link
-          href="/signup"
-          className="text-indigo-600 hover:text-indigo-500 hover:underline"
-        >
-          Don't have an account? Sign up!
-        </Link>
+        <p>
+          Don't have an account?{" "}
+          <span>
+            <Link
+              href="/signup"
+              className="text-indigo-600 hover:text-indigo-500 hover:underline"
+            >
+              Sign up!
+            </Link>
+          </span>
+        </p>
       </div>
     </div>
   );

@@ -4,9 +4,15 @@ import jwt from "jsonwebtoken";
 export const getDataFromToken = (request: NextRequest) => {
   try {
     const encodedToken = request.cookies.get("token")?.value || "";
-    const decodedToken: any = jwt.verify(encodedToken, process.env.TOKEN_SECRET!);
+    if (!encodedToken) return null;
+
+    const decodedToken: any = jwt.verify(encodedToken, process.env.TOKEN_SECRET!)as {
+      id: string;
+    };
+
     return decodedToken.id;
   } catch (error: any) {
-    throw new Error(error.message);
+    // Token might be expired or invalid
+    return null;
   }
 };

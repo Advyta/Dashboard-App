@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
-// import { store } from "@/store/store";
+import StoreProvider from "./storeProvider";
 
 
 // const geistSans = Geist({
@@ -28,9 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <Provider store={store}> */}
+        <StoreProvider>
           {children}
-        {/* </Provider> */}
+        </StoreProvider>
       </body>
     </html>
   );

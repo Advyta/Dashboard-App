@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // create response
     const response = NextResponse.json(
-      { message: "Login successful", success: true, token, userId: user._id },
+      { message: "Login successful", success: true, token, user: user },
       { status: 200 }
     );
 

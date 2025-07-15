@@ -34,11 +34,14 @@ export interface UserData {
   _id: string;
   username: string;
   email: string;
-  github: string;
-  bio: string;
-  location: string;
-  website: string;
-  phone: string;
-  createdAt: string;
-  updatedAt: string;
+  github?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  phone?: string;
+  theme?: "light" | "dark";
+  isVerified?: boolean;
+  isAdmin?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }

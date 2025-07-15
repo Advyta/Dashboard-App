@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Form from "../../ui/form";
 import { FormField, FormData } from "@/lib/types";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/features/userSlice";
 
 //Project: Dashboard APP
 // Module: Authentication
@@ -23,6 +25,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Memoize the fields array so it doesn't get recreated on every render
   const signupFields: FormField[] = useMemo(
@@ -60,8 +63,11 @@ export default function SignupPage() {
         setError("");
         const response = await axios.post("/api/users/signup", data);
         console.log("Signup successful!", response.data);
+        // Set the user in the Redux store
+        dispatch(setUser(response.data.data));
+
         // Redirect to user's specific profile page
-        router.push(`/profile/${response.data.userId}`);
+        router.push(`/profile/${response.data.user._id}`);
       } catch (error: any) {
         setError(error.response?.data?.error || "Something went wrong!");
         console.error("Signup error:", error.message);
@@ -84,12 +90,17 @@ export default function SignupPage() {
       />
 
       <div className="text-center mt-4">
-        <Link
-          href="/login"
-          className="text-indigo-600 hover:text-indigo-500 hover:underline"
-        >
-          Already have an account? Login!
-        </Link>
+        <p>
+          Already have an account?{" "}
+          <span>
+            <Link
+              href="/login"
+              className="text-indigo-600 hover:text-indigo-500 hover:underline"
+            >
+              Login!
+            </Link>
+          </span>
+        </p>
       </div>
     </div>
   );
