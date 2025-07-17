@@ -60,7 +60,7 @@ export default function LoginPage() {
         dispatch(setUser(response.data.user));
 
         // Redirect to user's specific profile page
-        router.push(`/profile/${response.data.user._id}`);
+        router.push(`/profile`);
       } catch (error: any) {
         setError(error.response?.data?.error || "Something went wrong!");
         console.log(

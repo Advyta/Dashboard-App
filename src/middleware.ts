@@ -3,14 +3,16 @@ import { jwtVerify } from "jose";
 
 const PUBLIC_ROUTES = ["/", "/login", "/signup"];
 function isPublicRoute(pathname: string) {
-  return PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route + "/"));
+  return PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
 }
 
 // Verify the token and return the payload
-async function verifyJWT(tocken: string){
+async function verifyJWT(tocken: string) {
   try {
     const secret = new TextEncoder().encode(process.env.TOKEN_SECRET);
-    const {payload} = await jwtVerify(tocken, secret);
+    const { payload } = await jwtVerify(tocken, secret);
     return payload;
   } catch (error) {
     return null;
@@ -28,18 +30,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.nextUrl));
   }
 
-  if(token){
+  if (token) {
     const verifiedToken = await verifyJWT(token);
 
     // if the token invalid
-    if(!verifiedToken){
+    if (!verifiedToken) {
       const res = NextResponse.redirect(new URL("/login", request.url));
       res.cookies.set("token", "", { expires: new Date(0) });
       return res;
     }
 
     // token is valid but the user is on a public route
-    if(isPublic){
+    if (isPublic) {
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
     }
   }
