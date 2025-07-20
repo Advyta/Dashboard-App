@@ -1,6 +1,7 @@
 "use client";
 import { RootState } from "@/lib/store";
 import Button from "@/ui/button";
+import Loading from "@/ui/loading";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,9 +34,10 @@ const Dashboard = () => {
   if (loading === "pending") {
     return <div>Loading...</div>;
   }
+  console.log(user);
   return (
     <div>
-      <h1>Welcome! {user?._id}</h1>
+      <h1>Welcome! {user?.username}</h1>
       <Button onClick={() => router.push("/profile")}>Profile</Button>
     </div>
   );

@@ -11,6 +11,7 @@ import { logout, updateUser } from "@/lib/features/userSlice";
 import { FormData, FormField } from "@/lib/types";
 import Button from "@/ui/button";
 import Form from "@/ui/form";
+import Loading from "@/ui/loading";
 
 // User profile page - redirects to user-specific profile
 
@@ -135,22 +136,18 @@ export default function ProfilePage() {
   ];
 
   useEffect(() => {
-    if (user === undefined) {
-      // User data is not loaded yet
-      // Add a spinner here
-      return;
+    if(formLoading === "pending" || formLoading === "succeeded"){
+      if (!isAuthenticated || !user) {
+        router.replace("/login");
+      }
     }
-    // If not authenticated, redirect to login
-    if (!isAuthenticated || !user) {
-      router.replace("/login");
-      return;
-    }
+    
   }, [isAuthenticated, user, router]);
 
-  if (formLoading === "pending") {
+  if (formLoading === "pending" || user === undefined) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading edit form...</div>
+        <Loading />
       </div>
     );
   }
@@ -181,7 +178,7 @@ export default function ProfilePage() {
                 onClick={() => router.push("/dashboard")}
                 variant="primary"
               >
-                Back to Dashboard
+                Dashboard
               </Button>
               <Button
                 onClick={() => setIsEditing(!isEditing)}
