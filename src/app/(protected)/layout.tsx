@@ -9,7 +9,7 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[linear-gradient(315deg,_#000328_0%,_#00458E_100%)]">
+    <div className="min-h-screen bg-[linear-gradient(315deg,_#000116_0%,_#042073_100%)]">
       <SessionInitializer />
       <div className="flex ">
         <section className="">

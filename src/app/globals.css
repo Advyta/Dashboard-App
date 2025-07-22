@@ -1,5 +1,12 @@
-/* @import "tailwindcss/preflight";  */
 @import "tailwindcss";
 @plugin "daisyui";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* src/app/globals.css */
+:root {
+  --font-nunito: 'Nunito Sans', sans-serif;
+}
+html {
+  font-family: var( --font-nunito), sans-serif;
+}

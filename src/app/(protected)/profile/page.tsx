@@ -12,7 +12,11 @@ import { FormData, FormField } from "@/lib/types";
 import Button from "@/ui/button";
 import Form from "@/ui/form";
 import Loading from "@/ui/loading";
-import { faArrowUpRightFromSquare, faCommentDots, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpRightFromSquare,
+  faCommentDots,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // User profile page - redirects to user-specific profile
@@ -164,13 +168,15 @@ export default function ProfilePage() {
   // ------------------ Render Profile Page --------------------------------------------
   return (
     <div className="flex items-center justify-center w-full">
-      <div className=" bg-neutral-300/10 rounded-2xl py-8 mt-4 items-center overscroll-none ">
+      <div className=" bg-neutral-300/15 rounded-2xl py-8 mt-4 items-center overscroll-none ">
         <div className="max-w-4xl mx-auto px-6">
           {/* Header */}
-          <div className="bg-white/20 rounded-xl shadow-lg p-6 mb-6">
+          <div className="bg-white/10 rounded-xl shadow-lg p-6 mb-6">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-gray-100">My Profile</h1>
+                <h1 className="text-3xl text-gray-100 font-montserrat font-[700]">
+                  My Profile
+                </h1>
                 <p className="text-gray-300 mt-1">
                   Manage your personal information
                 </p>
@@ -191,7 +197,7 @@ export default function ProfilePage() {
 
           {/* Profile Display */}
           {!isEditing && (
-            <div className="bg-white/20  rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-white/10  rounded-xl shadow-lg overflow-hidden">
               {success && (
                 <div className="p-4 bg-green-50 border-l-4 border-green-400">
                   <div className="flex">
@@ -239,10 +245,9 @@ export default function ProfilePage() {
               )}
 
               {/* Profile Header */}
-              <div className="bg-[linear-gradient(315deg,_#000250_0%,_#01448C_100%)]  px-6 py-8 text-gray-100">
-                {/* linear-gradient(90deg, #1CB5E0 0%, #000851 100%) */}
+              <div className="bg-[linear-gradient(315deg,_#000116_0%,_#042073_100%)] shadow-lg px-6 py-8 text-gray-100">
                 <div className="flex items-center space-x-4">
-                  <div className="w-20 h-20 bg-white/20  bg-opacity-20 rounded-full flex items-center justify-center">
+                  <div className="w-20 h-20 bg-white/15  bg-opacity-20 rounded-full flex items-center justify-center">
                     <span className="text-2xl font-bold">
                       {user?.username?.charAt(0).toUpperCase()}
                     </span>
@@ -260,27 +265,30 @@ export default function ProfilePage() {
                   {/* Personal Information */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-200 mb-4 flex items-center">
-                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 mr-2 text-gray-300"/>
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        className="w-5 h-5 mr-2 text-gray-300"
+                      />
                       Personal Information
                     </h3>
 
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24 ">
                           Username:
                         </span>
                         <span className=" text-gray-400">{user?.username}</span>
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24">
                           Email:
                         </span>
                         <span className=" text-gray-400">{user?.email}</span>
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24">
                           Location:
                         </span>
                         <span className=" text-gray-400">
@@ -293,7 +301,7 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24">
                           Phone:
                         </span>
                         <span className=" text-gray-400">
@@ -310,13 +318,16 @@ export default function ProfilePage() {
                   {/* Online Presence */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-200 mb-4 flex items-center">
-                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="w-5 h-5 mr-2 text-gray-300" />
+                      <FontAwesomeIcon
+                        icon={faArrowUpRightFromSquare}
+                        className="w-5 h-5 mr-2 text-gray-300"
+                      />
                       Online Presence
                     </h3>
 
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24">
                           GitHub:
                         </span>
                         {user?.github ? (
@@ -336,7 +347,7 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 text-sm">
+                        <span className="text-gray-300 w-24">
                           Website:
                         </span>
                         {user?.website ? (
@@ -361,7 +372,10 @@ export default function ProfilePage() {
                 {/* Bio Section */}
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-gray-200 mb-4 flex items-center">
-                  <FontAwesomeIcon icon={faCommentDots} className="w-5 h-5 mr-2 text-gray-300" />
+                    <FontAwesomeIcon
+                      icon={faCommentDots}
+                      className="w-5 h-5 mr-2 text-gray-300"
+                    />
                     About Me
                   </h3>
                   <div className="bg-gray-50/20 rounded-lg p-4">

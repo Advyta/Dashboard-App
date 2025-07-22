@@ -8,6 +8,7 @@ import Form from "../../ui/form";
 import { FormField, FormData } from "@/lib/types";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/lib/features/userSlice";
+import Image from "next/image";
 
 //Project: Dashboard APP
 // Module: Authentication
@@ -80,6 +81,14 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <Image
+        src="/personalGrid.png"
+        alt="Personal Grid"
+        width={300}
+        height={90}
+        className="mb-8"
+        loading="lazy" 
+      />
       <Form
         fields={signupFields}
         title="Signup"

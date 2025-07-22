@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import {  Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "./storeProvider";
-import '../lib/fontawesome';
+import "../lib/fontawesome";
 
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const nunitoSans =  Nunito_Sans({
+  subsets: ["latin"],
+  weight: [ "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-nunito",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Dashboard App",
@@ -26,11 +23,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <StoreProvider>
-          {children}
-        </StoreProvider>
+    <html lang="en" className={nunitoSans.variable}>
+      <body className="">
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
