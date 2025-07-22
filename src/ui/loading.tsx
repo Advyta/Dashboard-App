@@ -1,8 +1,14 @@
 import React from 'react'
 
-const Loading = () => {
+// 
+
+type LoadingProps = {
+  params: string;
+};
+
+const Loading = ({params}: LoadingProps) => {
   return (
-    <span className="loading loading-dots loading-xl"></span>
+    <span className="loading loading-dots loading-xl">{params}</span>
   )
 }
 

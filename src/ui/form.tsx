@@ -46,35 +46,36 @@ const Form: React.FC<FormProps> = React.memo(
       <div className={`max-w-md w-full space-y-8 ${className}`}>
         <div className="text-center">
           <h1 className="text-3xl font-bold">{title}</h1>
-          {loading && <p className="text-blue-500">Loading...</p>}
-          {error && <p className="text-red-500">{error}</p>}
+          {loading && <p className="text-blue-400">Loading...</p>}
+          {error && <p className="text-red-400">{error}</p>}
         </div>
 
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="mt-8 space-y-6"
         >
-          <fieldset className="space-y-4 border-1 border-gray-300 rounded-lg p-4">
+          <fieldset className="space-y-4 border-1 border-gray-400 rounded-lg p-4">
             <div className="rounded-md space-y-4">
               {fields.map((field) => (
                 <div key={field.name}>
                   <label
                     htmlFor={field.name}
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-m font-medium text-gray-100"
                   >
-                    {field.label}{field.required && <span className="text-red-500">*</span>}
+                    {field.label}
+                    {field.required && <span className="text-red-400">*</span>}
                   </label>
                   <input
                     type={field.type}
                     id={field.name}
                     {...register(field.name, { required: field.required })}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-indigo-200 focus:border-indigo-200"
                     placeholder={
                       field.placeholder || `Enter your ${field.name}`
                     }
                   />
                   {errors[field.name] && (
-                    <span className="text-red-500 text-sm">
+                    <span className="text-red-400 text-sm">
                       {field.error || "This field is required"}
                     </span>
                   )}

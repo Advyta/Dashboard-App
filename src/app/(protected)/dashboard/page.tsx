@@ -32,12 +32,17 @@ const Dashboard = () => {
   
 
   if (loading === "pending") {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading params="Loading" />
+      </div>
+    );
   }
-  console.log(user);
+
   return (
     <div>
       <h1>Welcome! {user?.username}</h1>
+      {/* loading to be added */}
       <Button onClick={() => router.push("/profile")}>Profile</Button>
     </div>
   );

@@ -43,12 +43,12 @@ const Button: React.FC<ButtonProps> = React.memo(
     // Variant styles
     const variantStyles = {
       primary:
-        "bg-indigo-500 text-white hover:bg-indigo-700 focus:ring-indigo-500",
+        "bg-blue-500 text-white hover:bg-blue-600 focus:ring-sky-500",
       secondary: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
       outline:
         "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500",
-      ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
-      danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+      ghost: "text-gray-100 hover:bg-gray-100/10 focus:ring-gray-500 ",
+      danger: "bg-red-500 text-white hover:bg-red-700 focus:ring-red-500",
       success:
         "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
     };
