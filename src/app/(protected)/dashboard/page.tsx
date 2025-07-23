@@ -1,11 +1,9 @@
 "use client";
+import GeoLocation from "@/app/components/geoLocation";
 import { RootState } from "@/lib/store";
-import Button from "@/ui/button";
 import Loading from "@/ui/loading";
-import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 // Project: Dashboard App
@@ -17,19 +15,19 @@ import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const router = useRouter();
-  const {user, loading, isAuthenticated } = useSelector((state: RootState) => state.user);
- 
+  const { user, loading, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
-   if(user === undefined){
-    // user data is loading
-   }
-   if(!isAuthenticated || !user){
-    router.replace("/login");
-    return;
-   }
+    if (user === undefined) {
+      // user data is loading
+    }
+    if (!isAuthenticated || !user) {
+      router.replace("/login");
+      return;
+    }
   }, [router, user, isAuthenticated]);
-  
 
   if (loading === "pending") {
     return (
@@ -40,10 +38,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome! {user?.username}</h1>
-      {/* loading to be added */}
-      <Button onClick={() => router.push("/profile")}>Profile</Button>
+    <div className="w-full">
+      <div className="flex justify-center">
+        <h1>My Dashboard {user?.username}</h1>
+      </div>
+      <section className="flex flex-row justify-evenly">
+        <div className="border border-b-amber-100">Sports News</div>
+        <div  className="border border-b-amber-100">Weather/ Github</div>
+        <div  className="border border-b-amber-100">News</div>
+        
+      </section>
+      <GeoLocation onLocationFetched={(location) => console.log(location)} />
     </div>
   );
 };

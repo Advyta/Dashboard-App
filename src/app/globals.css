@@ -5,8 +5,12 @@
 
 /* src/app/globals.css */
 :root {
-  --font-nunito: 'Nunito Sans', sans-serif;
+  --font-nunito: "Nunito Sans", sans-serif;
 }
 html {
-  font-family: var( --font-nunito), sans-serif;
+  font-family: var(--font-nunito), sans-serif;
+}
+
+h1 {
+  all: revert;
 }
