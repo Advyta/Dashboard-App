@@ -21,15 +21,15 @@ import Image from "next/image";
 // User can logout
 
 const Navigation = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   return (
     <nav className="">
       {/*  */}
       <ul
         className={`menu h-screen bg-neutral-900/15 transition-all duration-300
-          ${collapsed ? "w-16" : "w-56"}`}
+          ${collapsed ? "w-14" : "w-56"}`}
       >
-        <li className="grid grid-cols-3 h-12 pb-2">
+        <li className={`grid h-12 pb-2 ${collapsed ? 'grid-cols-2' : 'grid-cols-3'}`}>
           {!collapsed && (
             <Image
               src="/personalGrid1.png"

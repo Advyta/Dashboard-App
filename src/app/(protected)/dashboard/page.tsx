@@ -2,9 +2,13 @@
 import GeoLocation from "@/app/components/geoLocation";
 import { RootState } from "@/lib/store";
 import Loading from "@/ui/loading";
+import News from "@/app/components/news";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCountryCode } from "@/lib/features/userSlice";
+import { Location } from "@/lib/types";
+import Card from "@/ui/card";
 
 // Project: Dashboard App
 // Module: Dashboard
@@ -18,6 +22,7 @@ const Dashboard = () => {
   const { user, loading, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user === undefined) {
@@ -28,6 +33,18 @@ const Dashboard = () => {
       return;
     }
   }, [router, user, isAuthenticated]);
+
+  const handleLocationFetched = async ({ lat, lon }: Location) => {
+    try {
+      const res = await fetch(`/api/users/geocode?lat=${lat}&lon=${lon}`);
+      const data = await res.json();
+      if (data.countryCode) {
+        dispatch(setCountryCode(data.countryCode));
+      }
+    } catch (err) {
+      // Optionally handle error
+    }
+  };
 
   if (loading === "pending") {
     return (
@@ -43,12 +60,13 @@ const Dashboard = () => {
         <h1>My Dashboard {user?.username}</h1>
       </div>
       <section className="flex flex-row justify-evenly">
-        <div className="border border-b-amber-100">Sports News</div>
-        <div  className="border border-b-amber-100">Weather/ Github</div>
-        <div  className="border border-b-amber-100">News</div>
-        
+        <div className="border border-b-amber-100 w-1/4">Sports News</div>
+        <div className="border border-b-amber-100 w-1/4">Weather/ Github</div>
+        <div className="border border-b-amber-100 w-1/4">
+          <News />
+        </div>
       </section>
-      <GeoLocation onLocationFetched={(location) => console.log(location)} />
+      <GeoLocation onLocationFetched={handleLocationFetched} />
     </div>
   );
 };

@@ -2,11 +2,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import {Location} from '@/lib/types';
 
-type Location = {
-  lat: number | null;
-  lon: number | null;
-};
+
 
 type GeoLocationProps = {
   onLocationFetched: (location: Location) => void;
@@ -36,7 +34,7 @@ export default function GeoLocation({ onLocationFetched }: GeoLocationProps) {
 
   return (
     <div>
-      {location.lat && location.lon ? (
+      {/* {location.lat && location.lon ? (
         <p>
           Location: Lat {location.lat}, Lon {location.lon}
         </p>
@@ -44,7 +42,7 @@ export default function GeoLocation({ onLocationFetched }: GeoLocationProps) {
         <p>Error: {error}</p>
       ) : (
         <p>Requesting location...</p>
-      )}
+      )} */}
     </div>
   );
 }

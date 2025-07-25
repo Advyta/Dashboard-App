@@ -7,12 +7,14 @@ interface UserState {
   user: UserData | null;
   isAuthenticated: boolean;
   loading: "idle" | "pending" | "succeeded" | "failed";
+  countryCode?: string | null;
 }
 
 const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   loading: "idle",
+  countryCode: null,
 };
 
 // Fetch user by Id
@@ -64,6 +66,10 @@ const userSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+    // Country code
+    setCountryCode: (state, action) => {
+      state.countryCode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserById.pending, (state) => {
@@ -95,6 +101,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, updateUser, logout, deleteUser } = userSlice.actions;
+export const { setUser, updateUser, logout, deleteUser, setCountryCode } =
+  userSlice.actions;
 export default userSlice.reducer;
 export { fetchUserProfile };
