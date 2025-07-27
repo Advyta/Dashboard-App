@@ -59,11 +59,26 @@ const Dashboard = () => {
       <div className="flex justify-center">
         <h1>My Dashboard {user?.username}</h1>
       </div>
-      <section className="flex flex-row justify-evenly">
-        <div className="border border-b-amber-100 w-1/4">Sports News</div>
-        <div className="border border-b-amber-100 w-1/4">Weather/ Github</div>
-        <div className="border border-b-amber-100 w-1/4">
+      {/* Responsive Grid Layout */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 3xl:gap-12 3xl:grid-cols-4 p-4">
+        {/* News section - appears first on small screens, positioned appropriately on larger screens */}
+        <div className="shadow-lg order-1 md:order-3 lg:order-1">
           <News />
+        </div>
+        
+        {/* Weather */}
+        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-3 md:order-2 lg:order-3">
+          Weather
+        </div>
+
+        {/* Sports News */}
+        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-2 md:order-1 lg:order-2">
+          Sports News
+        </div>
+
+        {/* Github */}
+        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-4 md:order-4 lg:order-4">
+          Github
         </div>
       </section>
       <GeoLocation onLocationFetched={handleLocationFetched} />

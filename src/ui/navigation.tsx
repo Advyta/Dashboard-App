@@ -27,9 +27,9 @@ const Navigation = () => {
       {/*  */}
       <ul
         className={`menu h-screen bg-neutral-900/15 transition-all duration-300
-          ${collapsed ? "w-14" : "w-56"}`}
+          ${collapsed ? "w-10 md:w-14 lg:w-16" : "w-56"}`}
       >
-        <li className={`grid h-12 pb-2 ${collapsed ? 'grid-cols-2' : 'grid-cols-3'}`}>
+        <li className={`grid h-12 pb-2 ${collapsed ? 'grid-cols-1' : 'grid-cols-3'}`}>
           {!collapsed && (
             <Image
               src="/personalGrid1.png"
@@ -44,26 +44,26 @@ const Navigation = () => {
           {/* navbar collapse */}
           <Button
             variant="ghost"
-            className=""
+            className="px-1.5 md:px-3"
             onClick={() => setCollapsed((prev) => !prev)}
           >
             <FontAwesomeIcon icon={faBars} />
           </Button>
         </li>
         <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="px-1.5 md:px-3 lg:px-4">
             <FontAwesomeIcon icon={faCube}  />
             {!collapsed && <span>Dashboard</span>}
           </Link>
         </li>
         <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/profile">
+          <Link href="/profile" className="px-1.5 md:px-3 lg:px-4 ">
             <FontAwesomeIcon icon={faUser} />
             {!collapsed && <span>Profile</span>}
           </Link>
         </li>
         <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/settings">
+          <Link href="/settings" className="px-1.5 md:px-3 lg:px-4">
             <FontAwesomeIcon icon={faGear} />
             {!collapsed && <span>Settings</span>}
           </Link>
