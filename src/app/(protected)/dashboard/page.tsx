@@ -4,11 +4,11 @@ import { RootState } from "@/lib/store";
 import Loading from "@/ui/loading";
 import News from "@/app/components/news";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCountryCode } from "@/lib/features/userSlice";
-import { Location } from "@/lib/types";
-import Card from "@/ui/card";
+import { Location, CurrentWeatherResponse } from "@/lib/types";
+import Weather from "@/app/components/weather";
 
 // Project: Dashboard App
 // Module: Dashboard
@@ -23,6 +23,10 @@ const Dashboard = () => {
     (state: RootState) => state.user
   );
   const dispatch = useDispatch();
+  const [location, setLocation] = useState<Location | null>(null);
+  const [weather, setWeather] = useState<CurrentWeatherResponse | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user === undefined) {
@@ -34,17 +38,35 @@ const Dashboard = () => {
     }
   }, [router, user, isAuthenticated]);
 
-  const handleLocationFetched = async ({ lat, lon }: Location) => {
-    try {
-      const res = await fetch(`/api/users/geocode?lat=${lat}&lon=${lon}`);
-      const data = await res.json();
-      if (data.countryCode) {
-        dispatch(setCountryCode(data.countryCode));
+  const handleLocationFetched = useCallback(
+    async ({ lat, lon }: Location) => {
+      try {
+        const res = await fetch(`/api/users/geocode?lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        if (data.countryCode) {
+          dispatch(setCountryCode(data.countryCode));
+        }
+        setLocation({ lat, lon });
+        // Fetch weather
+        setWeatherLoading(true);
+        setWeatherError(null);
+        const weatherRes = await fetch(
+          `/api/users/weather?lat=${lat}&lon=${lon}`
+        );
+        if (!weatherRes.ok) {
+          throw new Error("Failed to fetch weather");
+        }
+        const weatherData = await weatherRes.json();
+        setWeather(weatherData);
+      } catch (err: any) {
+        setWeatherError(err.message || "Failed to fetch weather");
+        setWeather(null);
+      } finally {
+        setWeatherLoading(false);
       }
-    } catch (err) {
-      // Optionally handle error
-    }
-  };
+    },
+    [dispatch]
+  );
 
   if (loading === "pending") {
     return (
@@ -65,10 +87,10 @@ const Dashboard = () => {
         <div className="shadow-lg order-1 md:order-3 lg:order-1">
           <News />
         </div>
-        
+
         {/* Weather */}
         <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-3 md:order-2 lg:order-3">
-          Weather
+          <Weather location={location} />
         </div>
 
         {/* Sports News */}

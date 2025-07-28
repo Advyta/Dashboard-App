@@ -14,6 +14,7 @@ export default function GeoLocation({ onLocationFetched }: GeoLocationProps) {
   const [location, setLocation] = useState<Location>({ lat: null, lon: null });
   const [error, setError] = useState<string | null>(null);
 
+  // Only run once on mount
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -27,10 +28,11 @@ export default function GeoLocation({ onLocationFetched }: GeoLocationProps) {
           console.error('Geolocation error:', err);
         }
       );
+      console.log(location);
     } else {
       setError('Geolocation is not supported by this browser.');
     }
-  }, [onLocationFetched]);
+  }, []);
 
   return (
     <div>

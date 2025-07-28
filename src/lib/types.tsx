@@ -80,3 +80,107 @@ export type newsArticle = {
   ai_content: string;
   duplicate: boolean;
 };
+
+// 🌍 Coordinates
+type Coordinates = {
+  lat: number;
+  lon: number;
+};
+
+// 🌦️ Weather Conditions
+type WeatherCondition = {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
+};
+
+// 📊 Temperature and Pressure Data
+type TemperatureDetails = {
+  temp: number;
+  feels_like: number;
+  temp_min: number;
+  temp_max: number;
+  pressure: number;
+  humidity: number;
+  sea_level?: number;
+  grnd_level?: number;
+  temp_kf?: number; // only in forecast
+};
+
+// 💨 Wind Info
+type WindDetails = {
+  speed: number;
+  deg: number;
+  gust?: number;
+};
+
+// ☁️ Cloud Coverage
+type CloudDetails = {
+  all: number;
+};
+
+// 🌄 Sun Info
+type SunDetails = {
+  sunrise: number;
+  sunset: number;
+};
+
+// 📌 Location Metadata
+type CityInfo = {
+  id: number;
+  name: string;
+  coord: Coordinates;
+  country: string;
+  population: number;
+  timezone: number;
+  sunrise: number;
+  sunset: number;
+};
+
+export type CurrentWeatherResponse = {
+  coord: Coordinates;
+  weather: WeatherCondition[];
+  base: string;
+  main: TemperatureDetails;
+  visibility: number;
+  wind: WindDetails;
+  clouds: CloudDetails;
+  dt: number;
+  sys: {
+    type: number;
+    id: number;
+    country: string;
+    sunrise: number;
+    sunset: number;
+  };
+  timezone: number;
+  id: number;
+  name: string;
+  cod: number;
+};
+
+type ForecastEntry = {
+  dt: number;
+  main: TemperatureDetails;
+  weather: WeatherCondition[];
+  clouds: CloudDetails;
+  wind: WindDetails;
+  visibility: number;
+  pop: number; // probability of precipitation
+  rain?: {
+    "3h": number;
+  };
+  sys: {
+    pod: string; // part of day (d = day, n = night)
+  };
+  dt_txt: string;
+};
+
+export type ForecastWeatherResponse = {
+  cod: string;
+  message: number;
+  cnt: number;
+  list: ForecastEntry[];
+  city: CityInfo;
+};

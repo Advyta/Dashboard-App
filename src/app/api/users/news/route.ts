@@ -13,6 +13,13 @@ import { NextResponse } from "next/server";
 // 3. Handle news data
 
 
+// Utility to normalize news text for comparison
+const normalizeTitle = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]/gi, "").trim();
+
+
+// Get request
+
 export async function GET(request: { url: string | URL }) {
   const { searchParams } = new URL(request.url);
   let country = searchParams.get("country");
@@ -23,7 +30,7 @@ export async function GET(request: { url: string | URL }) {
   }
   console.log(country);
   const apiKey = process.env.NEWSDATA_API_KEY; // Store in .env.local
-  const url = `https://newsdata.io/api/1/latest?apikey=${apiKey}&size=5&country=${country.toLowerCase()}`;
+  const url = `https://newsdata.io/api/1/latest?apikey=${apiKey}&size=10&country=${country.toLowerCase()}`;
 
   try {
     // console.log(url);
@@ -38,7 +45,21 @@ export async function GET(request: { url: string | URL }) {
       );
     }
 
-    return NextResponse.json(data.results);
+    const seen = new Set<string>();
+    const uniqueArticles = [];
+
+    for(const article of data.results){
+      const normalized = normalizeTitle(article.title || '');
+
+      if(!seen.has(normalized)){
+        seen.add(normalized);
+        uniqueArticles.push(article);
+      }
+    }
+
+    // Return only unique articles
+    return NextResponse.json(uniqueArticles.slice(0, 5));
+
   } catch (error) {
     console.error("News fetch error:", error);
     return NextResponse.json(
