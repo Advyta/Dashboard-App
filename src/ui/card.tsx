@@ -21,7 +21,7 @@ function Card<T>({
   return (
     <div
       className={`card  rounded-xl ${
-        cardTheme === "light" ? "bg-gray-400 text-gray-900" : "bg-gray-100/20"
+        cardTheme === "light" ? "bg-gray-500 text-gray-100" : "bg-gray-100/20"
       }`}
     >
       <div className="card-body">

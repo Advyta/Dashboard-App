@@ -81,6 +81,8 @@ export type newsArticle = {
   duplicate: boolean;
 };
 
+
+// -------------------------------------------------
 // 🌍 Coordinates
 type Coordinates = {
   lat: number;
@@ -160,27 +162,31 @@ export type CurrentWeatherResponse = {
   cod: number;
 };
 
-type ForecastEntry = {
-  dt: number;
+export type ForecastEntry = {
+  dt: number; // Time of data forecasted, unix, UTC
   main: TemperatureDetails;
   weather: WeatherCondition[];
   clouds: CloudDetails;
   wind: WindDetails;
-  visibility: number;
+  visibility: number; // Average visibility, metres. The maximum value of the visibility is 10km
   pop: number; // probability of precipitation
   rain?: {
+    "3h": number;
+  };
+  snow?: {
     "3h": number;
   };
   sys: {
     pod: string; // part of day (d = day, n = night)
   };
-  dt_txt: string;
+  dt_txt: string; // Time of data forecasted, ISO, UTC
 };
 
-export type ForecastWeatherResponse = {
+// 5 day / 3 hour forecast data
+export interface ForecastWeatherResponse {
   cod: string;
   message: number;
-  cnt: number;
+  cnt: number; // A number of timestamps returned in the API response
   list: ForecastEntry[];
   city: CityInfo;
 };

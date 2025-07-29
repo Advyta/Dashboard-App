@@ -24,9 +24,6 @@ const Dashboard = () => {
   );
   const dispatch = useDispatch();
   const [location, setLocation] = useState<Location | null>(null);
-  const [weather, setWeather] = useState<CurrentWeatherResponse | null>(null);
-  const [weatherLoading, setWeatherLoading] = useState(false);
-  const [weatherError, setWeatherError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user === undefined) {
@@ -47,22 +44,8 @@ const Dashboard = () => {
           dispatch(setCountryCode(data.countryCode));
         }
         setLocation({ lat, lon });
-        // Fetch weather
-        setWeatherLoading(true);
-        setWeatherError(null);
-        const weatherRes = await fetch(
-          `/api/users/weather?lat=${lat}&lon=${lon}`
-        );
-        if (!weatherRes.ok) {
-          throw new Error("Failed to fetch weather");
-        }
-        const weatherData = await weatherRes.json();
-        setWeather(weatherData);
       } catch (err: any) {
-        setWeatherError(err.message || "Failed to fetch weather");
-        setWeather(null);
-      } finally {
-        setWeatherLoading(false);
+        console.error(err);
       }
     },
     [dispatch]
@@ -89,7 +72,7 @@ const Dashboard = () => {
         </div>
 
         {/* Weather */}
-        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-3 md:order-2 lg:order-3">
+        <div className="shadow-lg rounded-lg order-3 md:order-2 lg:order-3">
           <Weather location={location} />
         </div>
 
