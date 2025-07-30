@@ -7,6 +7,8 @@ import {
   CurrentWeatherResponse,
 } from "@/lib/types";
 import { useWeather } from "@/lib/hooks/useWeather";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
 // Helper function to convert wind degrees to direction
 const getWindDirection = (degrees: number): string => {
@@ -61,7 +63,7 @@ const Weather = ({ location }: WeatherProps) => {
     <Card
       data={weather ? [weather] : []}
       title="Weather"
-      cardTheme="light"
+      cardTheme="blue"
       onRefresh={() => {
         if (location?.lat && location?.lon)
           fetchWeather(location.lat, location.lon);
@@ -76,7 +78,7 @@ const Weather = ({ location }: WeatherProps) => {
             <>
               <div className="collapse ">
                 <input type="checkbox" className="peer" />
-                <div className="collapse-title bg-gray-200/10  ">
+                <div className="collapse-title p-5 bg-gray-200/10 rounded-xl peer-checked:rounded-t-xl peer-checked:rounded-b-none">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-lg">{item.name}</span>
                     <span className="capitalize">
@@ -105,24 +107,12 @@ const Weather = ({ location }: WeatherProps) => {
                     {item.main.humidity}% | Wind: {item.wind.speed} m/s
                   </div>
                 </div>
-                <div className="collapse-content pt-4  bg-gray-200/10 ">
+                <div className="collapse-content p-5 bg-gray-200/10 ">
                   {/* Sunrise & Sunset */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-yellow-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
-                      </svg>
+
+                      <FontAwesomeIcon icon={faSun} className="h-5 w-5 text-yellow-500"/>
                       <div>
                         <p className="text-xs text-gray-300">Sunrise</p>
                         <p className="text-sm font-medium">
@@ -134,20 +124,7 @@ const Weather = ({ location }: WeatherProps) => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-indigo-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                        />
-                      </svg>
+                      <FontAwesomeIcon icon={faMoon} className="h-5 w-5 text-blue-500"/>
                       <div>
                         <p className="text-xs text-gray-300">Sunset</p>
                         <p className="text-sm font-medium">
@@ -191,7 +168,7 @@ const Weather = ({ location }: WeatherProps) => {
                   </div>
 
                   {/* Hourly Forecast */}
-                  <div className="mt-6">
+                  <div className="mt-6 bg-yellow-300/40 p-4 rounded-xl">
                     <h4 className="text-sm font-medium mb-2">Next 12 Hours</h4>
                     <div className="flex overflow-x-auto pb-2 gap-4">
                       {hourlyForecast?.list?.map(

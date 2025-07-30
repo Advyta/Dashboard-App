@@ -21,7 +21,7 @@ function Card<T>({
   return (
     <div
       className={`card  rounded-xl ${
-        cardTheme === "light" ? "bg-gray-500 text-gray-100" : "bg-gray-100/20"
+        cardTheme === "blue" ? "bg-[#042073]/50 text-gray-100" : "bg-gray-100/20"
       }`}
     >
       <div className="card-body">
@@ -30,7 +30,7 @@ function Card<T>({
             <h2 className="card-title capitalize">{title}</h2>
             {/* refresh icon */}
             <Button
-              variant={`${cardTheme === "light" ? "outline" : "ghost"}`}
+              variant={`ghost`}
               onClick={onRefresh}
             >
               <FontAwesomeIcon icon={faRotateRight} />

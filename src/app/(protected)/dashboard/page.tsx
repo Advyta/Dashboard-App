@@ -75,16 +75,17 @@ const Dashboard = () => {
         <div className="shadow-lg rounded-lg order-3 md:order-2 lg:order-3">
           <Weather location={location} />
         </div>
-
-        {/* Sports News */}
-        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-2 md:order-1 lg:order-2">
-          Sports News
-        </div>
-
         {/* Github */}
         <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-4 md:order-4 lg:order-4">
           Github
         </div>
+
+        {/* Sports News */}
+        {/* <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-2 md:order-1 lg:order-2">
+          Sports News
+        </div> */}
+
+        
       </section>
       <GeoLocation onLocationFetched={handleLocationFetched} />
     </div>
