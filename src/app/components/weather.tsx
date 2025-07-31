@@ -76,38 +76,54 @@ const Weather = ({ location }: WeatherProps) => {
             <span className="text-red-500">{error}</span>
           ) : (
             <>
-              <div className="collapse ">
-                <input type="checkbox" className="peer" />
-                <div className="collapse-title p-5 bg-gray-200/10 rounded-xl peer-checked:rounded-t-xl peer-checked:rounded-b-none">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg">{item.name}</span>
-                    <span className="capitalize">
-                      {item.weather[0]?.description}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-1 mt-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold">
+              <div className="collapse">
+                <input type="checkbox" className="peer !p-5" />
+                <div className="collapse-title p-4 sm:p-5 bg-gray-50/15 rounded-xl peer-checked:rounded-t-xl peer-checked:rounded-b-none">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-lg sm:text-xl truncate">{item.name}</h3>
+                      <p className="text-sm sm:text-base text-gray-300 capitalize">
+                        {item.weather[0]?.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-end gap-4 mt-1 sm:mt-0">
+                      <span className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                         {Math.round(item.main.temp)}°C
                       </span>
                       <img
                         src={`https://openweathermap.org/img/wn/${item.weather[0]?.icon}@2x.png`}
-                        alt="icon"
-                        width={48}
-                        height={48}
+                        alt="weather icon"
+                        className="w-12 h-12 sm:w-14 sm:h-14"
+                        width={56}
+                        height={56}
                       />
                     </div>
-                    <div className="flex gap-2 text-xs text-gray-300 mt-1">
-                      <span>H: {Math.round(item.main.temp_max)}°C</span>
-                      <span>L: {Math.round(item.main.temp_min)}°C</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-3 text-xs sm:text-sm">
+                    <div className="rounded-lg p-2">
+                      <div className="text-gray-400">High/Low</div>
+                      <div>
+                        <span className="text-red-300">H: {Math.round(item.main.temp_max)}°C</span>
+                        <span className="mx-1 text-gray-500">/</span>
+                        <span className="text-blue-300">L: {Math.round(item.main.temp_min)}°C</span>
+                      </div>
+                    </div>
+                    <div className="rounded-lg p-2">
+                      <div className="text-gray-400">Feels Like</div>
+                      <div>{Math.round(item.main.feels_like)}°C</div>
+                    </div>
+                    <div className="rounded-lg p-2">
+                      <div className="text-gray-400">Humidity</div>
+                      <div>{item.main.humidity}%</div>
+                    </div>
+                    <div className="rounded-lg p-2">
+                      <div className="text-gray-400">Wind</div>
+                      <div>{item.wind.speed} m/s</div>
                     </div>
                   </div>
-                  <div className="text-xs mt-2">
-                    Feels like: {Math.round(item.main.feels_like)}°C | Humidity:{" "}
-                    {item.main.humidity}% | Wind: {item.wind.speed} m/s
-                  </div>
                 </div>
-                <div className="collapse-content p-5 bg-gray-200/10 ">
+                <div className="collapse-content p-5 bg-gray-200/10 rounded-b-xl ">
                   {/* Sunrise & Sunset */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center gap-2">
@@ -168,16 +184,16 @@ const Weather = ({ location }: WeatherProps) => {
                   </div>
 
                   {/* Hourly Forecast */}
-                  <div className="mt-6 bg-yellow-300/40 p-4 rounded-xl">
+                  <div className="mt-2 bg-yellow-300/40 p-4 rounded-xl">
                     <h4 className="text-sm font-medium mb-2">Next 12 Hours</h4>
-                    <div className="flex overflow-x-auto pb-2 gap-4">
+                    <div className="grid grid-cols-2 justify-evenly sm:grid-cols-4 gap-x-2 gap-y-4 sm:gap-4 pb-2 ">
                       {hourlyForecast?.list?.map(
                         (hour: ForecastEntry, idx: number) => {
                           const date = new Date(hour.dt * 1000);
                           return (
                             <div
                               key={idx}
-                              className="flex flex-col items-center min-w-[60px] text-center"
+                              className="flex flex-col items-center bg-yellow-200/20 rounded-xl p-2 min-w-[60px] text-center"
                             >
                               <span className="text-xs font-medium">
                                 {date.toLocaleTimeString([], {
@@ -189,7 +205,7 @@ const Weather = ({ location }: WeatherProps) => {
                               <img
                                 src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
                                 alt={hour.weather[0].description}
-                                className="w-8 h-8 my-1"
+                                className="w-8 h-8"
                               />
                               <span className="text-sm font-medium">
                                 {Math.round(hour.main.temp)}°C
@@ -213,7 +229,7 @@ const Weather = ({ location }: WeatherProps) => {
                   <h4 className="text-sm font-semibold text-gray-300 mb-2">
                     5-Day Forecast
                   </h4>
-                  <div className="grid grid-cols-5 gap-1 text-xs">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-1 text-xs">
                     {forecast.list.map((day: ForecastEntry, index: number) => (
                       <div key={index} className="flex flex-col items-center">
                         <span className="font-medium">

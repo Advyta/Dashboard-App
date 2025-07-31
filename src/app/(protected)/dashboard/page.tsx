@@ -7,8 +7,9 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCountryCode } from "@/lib/features/userSlice";
-import { Location, CurrentWeatherResponse } from "@/lib/types";
+import { Location } from "@/lib/types";
 import Weather from "@/app/components/weather";
+import GithubTrending from "@/app/components/GithubTrending";
 
 // Project: Dashboard App
 // Module: Dashboard
@@ -64,30 +65,19 @@ const Dashboard = () => {
       <div className="flex justify-center">
         <h1>My Dashboard {user?.username}</h1>
       </div>
-      {/* Responsive Grid Layout */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 3xl:gap-12 3xl:grid-cols-4 p-4">
-        {/* News section - appears first on small screens, positioned appropriately on larger screens */}
-        <div className="shadow-lg order-1 md:order-3 lg:order-1">
+        <div className="shadow-lg rounded-lg order-1 md:order-3 lg:order-1">
           <News />
         </div>
 
-        {/* Weather */}
         <div className="shadow-lg rounded-lg order-3 md:order-2 lg:order-3">
-          <Weather location={location} />
+          <GeoLocation onLocationFetched={handleLocationFetched} />
+          {location && <Weather location={location} />}
         </div>
-        {/* Github */}
-        <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-4 md:order-4 lg:order-4">
-          Github
+        <div className="shadow-lg rounded-lg order-4 md:order-4 lg:order-4">
+          <GithubTrending />
         </div>
-
-        {/* Sports News */}
-        {/* <div className="shadow-lg border border-b-amber-100 p-4 rounded-lg order-2 md:order-1 lg:order-2">
-          Sports News
-        </div> */}
-
-        
       </section>
-      <GeoLocation onLocationFetched={handleLocationFetched} />
     </div>
   );
 };
