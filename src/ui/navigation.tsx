@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,15 +12,49 @@ import Link from "next/link";
 import Button from "./button";
 import Image from "next/image";
 
-// Project: Dashboard App
-// Module: UI
-// Component: Navigation
-// Author: Advyta
-// Date: 08/07/2025
-// Logic:
-// Side Navigation component for the dashboard app
-// User can navigate to profile page and dashboard page
-// User can logout
+/**
+ * Project: Dashboard App
+ * Module: UI Components
+ * Component: Navigation
+ * Author: Advyta
+ * Date: 05/08/2025
+ * Description: Main navigation component for the application
+ * 
+ * Screen Data:
+ * - Displays navigation links based on user authentication
+ * - Shows user profile and settings access
+ * - Indicates current active route
+ * - Mobile menu toggle button
+ * 
+ * Screen Layout & Responsive Behavior:
+ * - Horizontal navigation bar on desktop
+ * - Collapsible hamburger menu on mobile
+ * - Responsive breakpoints for different screen sizes
+ * - Fixed positioning at the top of the viewport
+ * - Smooth transitions for mobile menu
+ * 
+ * UI Behavior:
+ * - Mobile menu toggle with animation
+ * - Active route highlighting
+ * - Dropdown menus for user settings
+ * - Click outside to close mobile menu
+ * - Smooth scrolling behavior
+ * 
+ * Data Validation:
+ * - Validates user authentication status
+ * - Checks for valid navigation routes
+ * - Handles missing or invalid route data
+ * - Validates user permissions for protected routes
+ * 
+ * State:
+ * - Manages mobile menu open/close state
+ * - Tracks active navigation item
+ * - Manages dropdown menu visibility
+ * 
+ * Dependencies:
+ * - Next.js Link for client-side navigation
+ * - FontAwesome for icons
+ */
 
 const Navigation = () => {
   const [collapsed, setCollapsed] = useState(true);

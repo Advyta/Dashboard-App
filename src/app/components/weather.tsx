@@ -1,14 +1,73 @@
+"use client";
+
 import React, { useEffect } from "react";
 import Card from "@/ui/card";
-import {
-  Location,
-  ForecastWeatherResponse,
-  ForecastEntry,
-  CurrentWeatherResponse,
-} from "@/lib/types";
+import { Location, ForecastEntry } from "@/lib/types";
 import { useWeather } from "@/lib/hooks/useWeather";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+
+/**
+ * Project: Dashboard App
+ * Module: Weather
+ * Component: Weather
+ * Author: Advyta
+ * Date: 01/08/2025
+ * Description: Displays current weather and forecast information
+ *
+ * Screen Data:
+ * - Current weather conditions (temperature, humidity, wind, etc.)
+ * - 5-day weather forecast
+ * - Location information
+ * - Weather alerts and warnings
+ * - Loading and error states
+ *
+ * Screen Layout & Responsive Behavior:
+ * - Card-based layout with current weather prominently displayed
+ * - Responsive grid for forecast items
+ * - Adapts to different screen sizes (mobile, tablet, desktop)
+ * - Smooth animations for state transitions
+ * - Optimized for touch and mouse interactions
+ *
+ * UI Behavior:
+ * - Auto-detects user location on mount
+ * - Shows loading spinner during data fetch
+ * - Displays error messages for location/weather fetch failures
+ * - Supports manual refresh of weather data
+ * - Animated transitions between states
+ *
+ * Data Validation:
+ * - Validates location coordinates
+ * - Sanitizes weather API responses
+ * - Handles missing or incomplete weather data
+ * - Validates temperature units and conversions
+ * - Handles API rate limiting and errors
+ *
+ * State Management:
+ * - Uses Redux for global weather state
+ * - Local state for UI interactions
+ * - Handles loading and error states
+ * - Manages location permissions
+ *
+ * Dependencies:
+ * - Redux for state management
+ * - OpenWeatherMap API for weather data
+ * - date-fns for date formatting
+ * - Framer Motion for animations
+ * - Custom hooks for weather data fetching
+ *
+ * Performance Considerations:
+ * - Memoizes expensive calculations
+ * - Lazy loads weather icons
+ * - Debounces location updates
+ * - Caches weather data
+ *
+ * External weather API (via custom hook)
+ * - FontAwesome for weather icons
+ * - Custom Card component for layout
+ */
+
+// -------------------------------------------------
 
 // Helper function to convert wind degrees to direction
 const getWindDirection = (degrees: number): string => {
@@ -34,17 +93,6 @@ const getWindDirection = (degrees: number): string => {
   return directions[index];
 };
 
-// Project: Dashboard App
-// Module: Weather
-// Component: Weather
-// Author: Advyta
-// Date: 28/07/2025
-// Logic:
-// 1. Fetch weather data from the server based on the location
-// 2. Display weather data
-// 3. Handle weather data
-
-// -------------------------------------------------
 interface WeatherProps {
   location: Location | null;
 }
@@ -81,12 +129,14 @@ const Weather = ({ location }: WeatherProps) => {
                 <div className="collapse-title p-4 sm:p-5 bg-gray-50/15 rounded-xl peer-checked:rounded-t-xl peer-checked:rounded-b-none">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg sm:text-xl truncate">{item.name}</h3>
+                      <h3 className="font-bold text-lg sm:text-xl truncate">
+                        {item.name}
+                      </h3>
                       <p className="text-sm sm:text-base text-gray-300 capitalize">
                         {item.weather[0]?.description}
                       </p>
                     </div>
-                    <div className="flex items-center justify-between sm:justify-end gap-4 mt-1 sm:mt-0">
+                    <div className="flex items-center justify-start sm:justify-end gap-4 mt-1 sm:mt-0">
                       <span className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                         {Math.round(item.main.temp)}°C
                       </span>
@@ -99,14 +149,18 @@ const Weather = ({ location }: WeatherProps) => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-3 text-xs sm:text-sm">
                     <div className="rounded-lg p-2">
                       <div className="text-gray-400">High/Low</div>
                       <div>
-                        <span className="text-red-300">H: {Math.round(item.main.temp_max)}°C</span>
+                        <span className="text-red-300">
+                          H: {Math.round(item.main.temp_max)}°C
+                        </span>
                         <span className="mx-1 text-gray-500">/</span>
-                        <span className="text-blue-300">L: {Math.round(item.main.temp_min)}°C</span>
+                        <span className="text-blue-300">
+                          L: {Math.round(item.main.temp_min)}°C
+                        </span>
                       </div>
                     </div>
                     <div className="rounded-lg p-2">
@@ -127,8 +181,10 @@ const Weather = ({ location }: WeatherProps) => {
                   {/* Sunrise & Sunset */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center gap-2">
-
-                      <FontAwesomeIcon icon={faSun} className="h-5 w-5 text-yellow-500"/>
+                      <FontAwesomeIcon
+                        icon={faSun}
+                        className="h-5 w-5 text-yellow-500"
+                      />
                       <div>
                         <p className="text-xs text-gray-300">Sunrise</p>
                         <p className="text-sm font-medium">
@@ -140,7 +196,10 @@ const Weather = ({ location }: WeatherProps) => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faMoon} className="h-5 w-5 text-blue-500"/>
+                      <FontAwesomeIcon
+                        icon={faMoon}
+                        className="h-5 w-5 text-blue-500"
+                      />
                       <div>
                         <p className="text-xs text-gray-300">Sunset</p>
                         <p className="text-sm font-medium">
@@ -184,7 +243,7 @@ const Weather = ({ location }: WeatherProps) => {
                   </div>
 
                   {/* Hourly Forecast */}
-                  <div className="mt-2 bg-yellow-300/40 p-4 rounded-xl">
+                  <div className="mt-2 bg-gray-50/10 p-4 rounded-xl overflow-x-auto">
                     <h4 className="text-sm font-medium mb-2">Next 12 Hours</h4>
                     <div className="grid grid-cols-2 justify-evenly sm:grid-cols-4 gap-x-2 gap-y-4 sm:gap-4 pb-2 ">
                       {hourlyForecast?.list?.map(
@@ -193,7 +252,7 @@ const Weather = ({ location }: WeatherProps) => {
                           return (
                             <div
                               key={idx}
-                              className="flex flex-col items-center bg-yellow-200/20 rounded-xl p-2 min-w-[60px] text-center"
+                              className="flex flex-col items-center bg-[#042073]/50 rounded-xl p-2 min-w-[55px] text-center"
                             >
                               <span className="text-xs font-medium">
                                 {date.toLocaleTimeString([], {

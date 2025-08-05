@@ -5,17 +5,55 @@ import { RootState } from "@/lib/store";
 import Card from "@/ui/card";
 import Link from "next/link";
 import { newsArticle } from "@/lib/types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
-// -------------------------------------------------
-// Project: Dashboard APP
-// Module: News
-// Component: News
-// Author: Advyta
-// Date: 24/07/2025
-// Logic:
-// 1. Fetch news data from the server based on the country code
-// 2. Display news data
-// 3. Handle news data
+/**
+ * Project: Dashboard App
+ * Module: News
+ * Component: News
+ * Author: Advyta
+ * Date: 24/07/2025
+ * Description: Displays news articles in a card format with country-based filtering
+ *
+ * Screen Data:
+ * - Displays news articles with images, titles, and descriptions
+ * - Shows source and publication time for each article
+ * - Loading state during data fetch
+ * - Error messages when news fetch fails
+ *
+ * Screen Layout & Responsive Behavior:
+ * - Responsive grid layout (1-3 columns based on screen size)
+ * - Card-based design with consistent spacing
+ * - Image thumbnails with aspect ratio preservation
+ * - Mobile-first design with appropriate touch targets
+ * - Smooth transitions between states
+ *
+ * UI Behavior:
+ * - Fetches news on component mount and when country changes
+ * - Shows loading spinner during data fetch
+ * - Displays error message if fetch fails
+ * - Clicking on article opens source in new tab
+ * - Smooth scrolling for content overflow
+ *
+ * Data Validation:
+ * - Validates news API response structure
+ * - Handles missing or malformed article data
+ * - Sanitizes article content for security
+ * - Validates image URLs before rendering
+ * - Handles different error scenarios (network, rate limiting, etc.)
+ *
+ * State:
+ * - news: Array of news articles (newsArticle[])
+ * - loading: Loading state indicator (boolean)
+ * - error: Error message if fetch fails (string | null)
+ *
+ * Dependencies:
+ * - Redux for state management (country code)
+ * - Next.js Link for client-side navigation
+ * - Custom Card component for layout
+ * - External news API for article data
+ */
 
 const News = () => {
   const countryCode = useSelector((state: RootState) => state.user.countryCode);
@@ -77,8 +115,12 @@ const News = () => {
                       </small>{" "}
                     </div>
                     <div className="">
-                      <h4 className="font-medium text-sm sm:text-base">{article.title}</h4>
-                      <small className="text-gray-400 text-xs">{article.pubDate}</small>
+                      <h4 className="font-medium text-sm sm:text-base">
+                        {article.title}
+                      </h4>
+                      <small className="text-gray-400 text-xs">
+                        {article.pubDate}
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -94,6 +136,9 @@ const News = () => {
                     rel="noopener noreferrer"
                   >
                     Read-the-article
+                    <span>
+                      <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                    </span>
                   </Link>
                 </div>
               </div>

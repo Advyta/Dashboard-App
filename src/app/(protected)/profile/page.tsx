@@ -159,7 +159,7 @@ export default function ProfilePage() {
   if (formLoading === "pending" || user === undefined) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loading params="Loading" />
+        <Loading message="Loading" />
       </div>
     );
   }
@@ -281,23 +281,17 @@ export default function ProfilePage() {
 
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24 ">
-                          Username:
-                        </span>
+                        <span className="text-gray-300 w-24 ">Username:</span>
                         <span className=" text-gray-400">{user?.username}</span>
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24">
-                          Email:
-                        </span>
+                        <span className="text-gray-300 w-24">Email:</span>
                         <span className=" text-gray-400">{user?.email}</span>
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24">
-                          Location:
-                        </span>
+                        <span className="text-gray-300 w-24">Location:</span>
                         <span className=" text-gray-400">
                           {user?.location || (
                             <span className="text-gray-400 italic">
@@ -308,9 +302,7 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24">
-                          Phone:
-                        </span>
+                        <span className="text-gray-300 w-24">Phone:</span>
                         <span className=" text-gray-400">
                           {user?.phone || (
                             <span className="text-gray-400 italic">
@@ -334,9 +326,7 @@ export default function ProfilePage() {
 
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24">
-                          GitHub:
-                        </span>
+                        <span className="text-gray-300 w-24">GitHub:</span>
                         {user?.github ? (
                           <a
                             href={user.github}
@@ -354,9 +344,7 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center">
-                        <span className="text-gray-300 w-24">
-                          Website:
-                        </span>
+                        <span className="text-gray-300 w-24">Website:</span>
                         {user?.website ? (
                           <a
                             href={user.website}
