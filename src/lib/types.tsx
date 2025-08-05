@@ -190,3 +190,19 @@ export interface ForecastWeatherResponse {
   list: ForecastEntry[];
   city: CityInfo;
 };
+
+
+export interface Repo {
+  id: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string;
+  owner: {
+    avatar_url: string;
+    login: string;
+  };
+}

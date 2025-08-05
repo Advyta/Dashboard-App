@@ -11,6 +11,8 @@ import { NextResponse } from "next/server";
 // 1. Fetch news data from the server based on the country code
 // 2. Display news data
 // 3. Handle news data
+// Error:
+// If the country code is not provided, 'us' is used by default
 
 
 // Utility to normalize news text for comparison

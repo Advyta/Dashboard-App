@@ -3,7 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/userModel";
 import { connect } from "@/dbConfig/dbConfig";
 
-//
+// Project: Dashboard APP
+// Module: Authentication
+// Component: ProfileRoute.ts
+// Author: Advyta
+// Date: 28/06/2025
+// Logic:
+// User can view and update their profile
+// On GET request, the user's profile is fetched from the database
+// On PUT request, the user's profile is updated in the database
+// The user can update their profile by providing email, github, bio, location, website, phone, theme
+
+// Error:
+// If the user is not authenticated, the user is redirected to the login page
+// If the user is not found, the user is redirected to the login page
 
 connect();
 

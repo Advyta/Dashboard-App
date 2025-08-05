@@ -1,6 +1,17 @@
 
 import { NextResponse } from 'next/server';
 
+// Project: Dashboard APP
+// Module: API
+// Component: geocode.ts
+// Author: Advyta
+// Date: 28/06/2025
+// Logic:
+// This module is used to get the country code from the latitude and longitude
+// It returns the country code if the latitude and longitude are valid
+// It returns an error message if the latitude and longitude are invalid
+
+
 export async function GET(request: { url: string | URL; }) {
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get('lat');
