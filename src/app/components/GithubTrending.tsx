@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
-import Card from "@/ui/card";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
   faCodeBranch,
   faCircleDot,
+  faSpinner,
+  faExclamationTriangle,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
+import { useGithubTrending } from "@/lib/hooks/api/useGithubTrending";
 import { Repo } from "@/lib/types";
+import Card from "@/ui/card";
+import Loading from "@/ui/loading";
+
 
 /**
  * Project: Dashboard App
@@ -54,48 +60,63 @@ import { Repo } from "@/lib/types";
  * - React hooks for state management
  */
 
+const formatNumber = (num: number): string => {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + "k";
+  }
+  return num.toString();
+};
+
+
 const GithubTrending: React.FC = () => {
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    data: repos = [], 
+    isLoading, 
+    error, 
+    refetch, 
+    isRefetching 
+  } = useGithubTrending({
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
 
-  const fetchTrendingRepos = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch("/api/github/trending");
-      if (!response.ok) {
-        throw new Error("Failed to fetch trending repositories");
-      }
-      const data = await response.json();
-      setRepos(data.items || []);
-    } catch (err) {
-      console.error("Error fetching trending repos:", err);
-      setError("Failed to load trending repositories");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (isLoading) {
+    return (
+      <Loading message="Loading trending repositories..." />
+    );
+  }
 
-  useEffect(() => {
-    fetchTrendingRepos();
-  }, []);
-
-  const formatNumber = (num: number): string => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "k";
-    }
-    return num.toString();
-  };
-
-  if (loading) return <div>Loading trending repositories...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) {
+    return (
+      <div className="p-4 bg-red-900/20 rounded-lg">
+        <div className="flex items-center text-red-400">
+          <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+          <span>Error loading repositories</span>
+        </div>
+        <p className="mt-2 text-sm text-red-300">
+          {error.message || 'Failed to fetch trending repositories'}
+        </p>
+        <button
+          onClick={() => refetch()}
+          className="mt-3 px-4 py-2 text-sm bg-red-900/50 hover:bg-red-900/70 text-red-100 rounded transition-colors"
+          disabled={isRefetching}
+        >
+          <FontAwesomeIcon 
+            icon={isRefetching ? faSpinner : faSync} 
+            spin={isRefetching} 
+            className="mr-2" 
+          />
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <Card
       title="Trending on GitHub"
       data={repos}
-      onRefresh={fetchTrendingRepos}
+      onRefresh={refetch}
       renderItem={(repo: Repo) => (
         <div
           key={repo.id}

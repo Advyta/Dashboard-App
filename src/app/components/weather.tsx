@@ -19,7 +19,6 @@ import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
  * - Current weather conditions (temperature, humidity, wind, etc.)
  * - 5-day weather forecast
  * - Location information
- * - Weather alerts and warnings
  * - Loading and error states
  *
  * Screen Layout & Responsive Behavior:
@@ -174,7 +173,7 @@ const Weather = ({ location }: WeatherProps) => {
                       <img
                         src={`https://openweathermap.org/img/wn/${item.weather[0]?.icon}@2x.png`}
                         alt="weather icon"
-                        className="w-12 h-12 sm:w-14 sm:h-14"
+                        className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100/45 rounded-full"
                         width={56}
                         height={56}
                       />
@@ -335,7 +334,7 @@ const Weather = ({ location }: WeatherProps) => {
                     {forecast.list.map((day: ForecastEntry, index: number) => (
                       <div
                         key={index}
-                        className="flex flex-col items-center tooltip tooltip-bottom tooltip-info"
+                        className="flex flex-col items-center tooltip tooltip-bottom tooltip-info gap-2"
                         data-tip={day.weather[0].description}
                       >
                         <span className="font-medium">
@@ -346,7 +345,7 @@ const Weather = ({ location }: WeatherProps) => {
                         <img
                           src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
                           alt={day.weather[0].description}
-                          className="w-9 h-9"
+                          className="w-9 h-9 bg-gray-100/45 rounded-xl"
                         />
                         <div className="flex gap-1">
                           <span className="font-medium">

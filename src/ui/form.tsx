@@ -10,32 +10,32 @@ import Button from "./button";
  * Author: Advyta
  * Date: 28/06/2025
  * Description: Reusable form component with validation and error handling
- * 
+ *
  * Screen Data:
  * - Dynamically generates form fields based on configuration
  * - Displays form title and submission button
  * - Shows loading state during submission
  * - Displays error messages when validation fails
- * 
+ *
  * Screen Layout & Responsive Behavior:
  * - Centered card layout with max-width
  * - Responsive padding and spacing
  * - Stacked form fields on mobile
  * - Side-by-side fields on larger screens when applicable
- * 
+ *
  * UI Behavior:
  * - Real-time field validation
  * - Disabled submit button during loading
  * - Error message display
  * - Smooth transitions for state changes
- * 
+ *
  * Data Validation:
  * - Validates required fields
  * - Enforces input patterns and types
  * - Client-side validation before submission
  * - Server-side error handling
  * - Custom validation rules support
- * 
+ *
  * Props:
  * - fields: Array of form field configurations (required)
  * - title: Form title (string, required)
@@ -83,7 +83,7 @@ const Form: React.FC<FormProps> = React.memo(
           {loading && <p className="text-blue-400">Loading...</p>}
           {error && <p className="text-red-400">{error}</p>}
         </div>
-
+        {/* Form */}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="mt-8 space-y-6"
@@ -116,7 +116,7 @@ const Form: React.FC<FormProps> = React.memo(
                 </div>
               ))}
             </div>
-
+            {/* Form Submit Button */}
             <div>
               <Button
                 type="submit"

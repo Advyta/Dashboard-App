@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { Provider } from "react-redux";
 import { makeStore, AppStore } from "../lib/store";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 // Project: Dashboard App
 // Module: Store Provider
@@ -27,5 +28,11 @@ export default function StoreProvider({
     storeRef.current = makeStore();
   }
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return (
+    <Provider store={storeRef.current}>
+      <QueryProvider>
+        {children}
+      </QueryProvider>
+    </Provider>
+  );
 }
