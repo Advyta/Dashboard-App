@@ -7,9 +7,10 @@ export async function GET(request: { url: string | URL }) {
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get("lat");
   const lon = searchParams.get("lon");
+  const city = searchParams.get("city");
 
-  if (!lat || !lon) {
-    return NextResponse.json({ error: "Missing coordinates" }, { status: 400 });
+  if (!city && (!lat || !lon)) {
+    return NextResponse.json({ error: "Missing coordinates or city name" }, { status: 400 });
   }
 
   const apiKey = process.env.OPENWEATHER_API_KEY;
@@ -21,13 +22,18 @@ export async function GET(request: { url: string | URL }) {
   }
 
   try {
+    // Build query parameters based on whether we're using coordinates or city name
+    const queryParam = city 
+      ? `q=${encodeURIComponent(city)}`
+      : `lat=${lat}&lon=${lon}`;
+    
     // Fetch both current weather and forecast in parallel
     const [currentRes, forecastRes] = await Promise.all([
       axios(
-        `${OPENWEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+        `${OPENWEATHER_BASE_URL}/weather?${queryParam}&appid=${apiKey}&units=metric`
       ),
       axios(
-        `${OPENWEATHER_BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+        `${OPENWEATHER_BASE_URL}/forecast?${queryParam}&appid=${apiKey}&units=metric`
       ),
     ]);
 

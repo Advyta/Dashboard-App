@@ -59,10 +59,12 @@ const News = () => {
   const countryCode = useSelector((state: RootState) => state.user.countryCode);
   const [news, setNews] = useState<newsArticle[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchNews = async () => {
     if (!countryCode) return;
     try {
+      setLoading(true);
       const newsResponse = await fetch(
         `/api/users/news?country=${countryCode}`
       );
@@ -74,6 +76,8 @@ const News = () => {
       setNews(newsData);
     } catch (err) {
       setError("Failed to fetch news");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +85,8 @@ const News = () => {
     fetchNews();
   }, [countryCode]);
 
+  if (loading) return <div>Loading news...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
   return (
     <div>
       {error && <p>Error: {error}</p>}
@@ -135,7 +141,7 @@ const News = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Read-the-article
+                    Read-the-article 
                     <span>
                       <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                     </span>

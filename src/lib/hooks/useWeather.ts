@@ -29,6 +29,7 @@ interface UseWeatherReturn {
   loading: boolean;
   error: string | null;
   fetchWeather: (lat: number, lon: number) => Promise<void>;
+  fetchWeatherByCity: (city: string) => Promise<void>;
 }
 
 export function useWeather(): UseWeatherReturn {
@@ -64,6 +65,34 @@ export function useWeather(): UseWeatherReturn {
       setWeather(null);
       setForecast(null);
       setLocation(null);
+      throw err; // Re-throw to allow error handling in the component
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchWeatherByCity = useCallback(async (city: string) => {
+    if (!city.trim()) return;
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/users/weather?city=${encodeURIComponent(city)}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to fetch weather data for the specified city");
+      }
+      
+      const data = await res.json();
+      setWeather(data.current);
+      setForecast(data.forecast);
+      setLocation(data.location);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch weather data for the specified city");
+      setWeather(null);
+      setForecast(null);
+      setLocation(null);
+      throw err; // Re-throw to allow error handling in the component
     } finally {
       setLoading(false);
     }
@@ -103,6 +132,7 @@ export function useWeather(): UseWeatherReturn {
     location,
     loading, 
     error, 
-    fetchWeather 
+    fetchWeather,
+    fetchWeatherByCity 
   };
 }

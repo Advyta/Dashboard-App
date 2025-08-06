@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -57,6 +55,11 @@ import Image from "next/image";
  */
 
 const Navigation = () => {
+  const navbarContent = [
+    { icon: faCube, label: "Dashboard", href: "/dashboard" },
+    { icon: faUser, label: "Profile", href: "/profile" },
+    { icon: faGear, label: "Settings", href: "/settings" },
+  ]
   const [collapsed, setCollapsed] = useState(true);
   return (
     <nav className="">
@@ -80,30 +83,22 @@ const Navigation = () => {
           {/* navbar collapse */}
           <Button
             variant="ghost"
-            className="px-1.5 md:px-3"
+            className="px-1.5 md:px-3 tooltip tooltip-right"
             onClick={() => setCollapsed((prev) => !prev)}
+            data-tip="Toggle Menu"
           >
             <FontAwesomeIcon icon={faBars} />
           </Button>
         </li>
-        <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/dashboard" className="px-1.5 md:px-3 lg:px-4">
-            <FontAwesomeIcon icon={faCube}  />
-            {!collapsed && <span>Dashboard</span>}
-          </Link>
-        </li>
-        <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/profile" className="px-1.5 md:px-3 lg:px-4 ">
-            <FontAwesomeIcon icon={faUser} />
-            {!collapsed && <span>Profile</span>}
-          </Link>
-        </li>
-        <li className={`h-12 ${collapsed? 'pt-1' : ''}`}>
-          <Link href="/settings" className="px-1.5 md:px-3 lg:px-4">
-            <FontAwesomeIcon icon={faGear} />
-            {!collapsed && <span>Settings</span>}
-          </Link>
-        </li>
+        
+        {navbarContent.map((item, idx) => (
+          <li className={`h-12 ${collapsed? 'pt-1' : ''}`} key={idx}>
+            <Link href={item.href} className="px-1.5 md:px-3 lg:px-4 tooltip tooltip-right" data-tip={item.label}>
+              <FontAwesomeIcon icon={item.icon} />
+              {!collapsed && <span>{item.label}</span>}
+            </Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );
