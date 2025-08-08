@@ -12,6 +12,7 @@ import { useGithubTrending } from "@/lib/hooks/api/useGithubTrending";
 import { Repo } from "@/lib/types";
 import Card from "@/ui/card";
 import Loading from "@/ui/loading";
+import Button from "@/ui/button";
 
 
 /**
@@ -96,7 +97,7 @@ const GithubTrending: React.FC = () => {
         <p className="mt-2 text-sm text-red-300">
           {error.message || 'Failed to fetch trending repositories'}
         </p>
-        <button
+        <Button
           onClick={() => refetch()}
           className="mt-3 px-4 py-2 text-sm bg-red-900/50 hover:bg-red-900/70 text-red-100 rounded transition-colors"
           disabled={isRefetching}
@@ -107,7 +108,7 @@ const GithubTrending: React.FC = () => {
             className="mr-2" 
           />
           Try Again
-        </button>
+        </Button>
       </div>
     );
   }

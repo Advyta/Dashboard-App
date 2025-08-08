@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNews } from "@/lib/hooks/api/useNews";
 import Loading from "@/ui/loading";
+import Button from "@/ui/button";
 
 /**
  * Project: Dashboard App
@@ -79,12 +80,12 @@ const News: React.FC = () => {
     return (
       <div className="text-red-400 p-4 bg-red-900/20 rounded-lg">
         Error: {error instanceof Error ? error.message : "Failed to load news"}
-        <button
+        <Button
           onClick={() => refetch()}
           className="block mt-2 text-sm text-blue-400 hover:underline"
         >
           Try again
-        </button>
+        </Button>
       </div>
     );
   }
@@ -126,7 +127,7 @@ const News: React.FC = () => {
                   />{" "}
                   <small className="text-gray-300">{article.source_name}</small>{" "}
                 </div>
-                <div className="">
+                <div>
                   <h4 className="font-medium text-sm sm:text-base">
                     {article.title}
                   </h4>

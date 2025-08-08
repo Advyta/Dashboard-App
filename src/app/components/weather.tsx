@@ -1,11 +1,54 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@/ui/card";
-import { Location, ForecastEntry } from "@/lib/types";
+import { Location as BaseLocation, ForecastEntry, CurrentWeatherResponse, ForecastWeatherResponse } from "@/lib/types";
 import { useWeather } from "@/lib/hooks/useWeather";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+
+interface Location extends Omit<BaseLocation, 'lat' | 'lon' | 'name' | 'country'> {
+  city?: string;
+  lat: number | null;
+  lon: number | null;
+  name?: string;
+  country?: string;
+}
+
+interface ForecastDay {
+  dt: number;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+  weather: Array<{
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }>;
+  clouds: {
+    all: number;
+  };
+  wind: {
+    speed: number;
+    deg: number;
+    gust?: number;
+  };
+  visibility: number;
+  pop: number;
+  rain?: {
+    '3h': number;
+  };
+  sys: {
+    pod: string;
+  };
+  dt_txt: string;
+}
 
 /**
  * Project: Dashboard App
@@ -97,38 +140,127 @@ interface WeatherProps {
 }
 
 const Weather = ({ location }: WeatherProps) => {
+  const { useCombinedWeather } = useWeather();
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Use the combined weather hook which handles both coordinates and city-based fetching
   const {
     weather,
     forecast,
     hourlyForecast,
     loading,
     error,
-    fetchWeather,
-    fetchWeatherByCity,
-  } = useWeather();
-
-  // Handle initial load with geolocation or default location
-  useEffect(() => {
-    if (location?.lat && location?.lon) {
-      fetchWeather(location.lat, location.lon).catch(() => {
-        // If geolocation fails, fall back to a default city
-        fetchWeatherByCity("London").catch(console.error);
-      });
-    }
-  }, [location, fetchWeather, fetchWeatherByCity]);
+    refetch
+  } = useCombinedWeather(
+    searchQuery ? null : (location?.lat || null),
+    searchQuery ? null : (location?.lon || null),
+    searchQuery || location?.city || ''
+  );
 
   // Handle search functionality
-  const handleSearch = async (query: string) => {
+  const handleSearch = (query: string) => {
     if (!query.trim()) return;
-    try {
-      await fetchWeatherByCity(query);
-    } catch (err) {
-      console.error("Error fetching weather for city:", err);
+    setSearchQuery(query);
+  };
+
+  // Reset search when location changes from parent
+  useEffect(() => {
+    if (location?.city && location.city !== searchQuery) {
+      setSearchQuery('');
     }
+  }, [location]);
+
+  const handleRefresh = () => {
+    refetch();
   };
 
   if (loading) return <div>Loading weather...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
+
+  // Format forecast date
+  const formatForecastDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString('en-US', { weekday: 'short' });
+  };
+
+  // Type guard to check if the forecast data is valid
+  const isValidForecastData = (data: any): data is ForecastWeatherResponse => {
+    return data && Array.isArray(data.list) && data.list.length > 0;
+  };
+
+  // Get daily forecast from hourly data
+  const getDailyForecast = (forecastData: ForecastWeatherResponse | null | undefined): ForecastDay[] => {
+    if (!forecastData || !isValidForecastData(forecastData)) return [];
+    
+    const dailyForecast: ForecastDay[] = [];
+    const processedDays = new Set<string>();
+    
+    forecastData.list.forEach((entry) => {
+      const date = new Date(entry.dt * 1000).toLocaleDateString();
+      if (!processedDays.has(date)) {
+        dailyForecast.push({
+          dt: entry.dt,
+          main: {
+            temp: entry.main.temp,
+            feels_like: entry.main.feels_like,
+            temp_min: entry.main.temp_min,
+            temp_max: entry.main.temp_max,
+            pressure: entry.main.pressure,
+            humidity: entry.main.humidity,
+          },
+          weather: entry.weather.map(w => ({
+            id: w.id,
+            main: w.main,
+            description: w.description,
+            icon: w.icon,
+          })),
+          clouds: { all: entry.clouds?.all || 0 },
+          wind: {
+            speed: entry.wind?.speed || 0,
+            deg: entry.wind?.deg || 0,
+            gust: entry.wind?.gust,
+          },
+          visibility: entry.visibility || 0,
+          pop: (entry as any).pop || 0,
+          rain: (entry as any).rain,
+          sys: {
+            pod: (entry as any).sys?.pod || 'd',
+          },
+          dt_txt: (entry as any).dt_txt || new Date(entry.dt * 1000).toISOString(),
+        });
+        processedDays.add(date);
+      }
+    });
+    
+    return dailyForecast.slice(0, 5);
+  };
+
+  // Get current day's forecast
+  const currentDayForecast = forecast && !Array.isArray(forecast) ? getDailyForecast(forecast) : [];
+
+  // Get weather icon based on time of day and weather condition
+  const getWeatherIcon = (weather: CurrentWeatherResponse | null, isDaytime = true) => {
+    if (!weather?.weather?.[0]) return null;
+    
+    const weatherId = weather.weather[0].id;
+    const isClear = weatherId === 800;
+    const isCloudy = weatherId > 800;
+    
+    if (isClear) {
+      return isDaytime ? (
+        <FontAwesomeIcon icon={faSun} className="text-yellow-400" />
+      ) : (
+        <FontAwesomeIcon icon={faMoon} className="text-blue-200" />
+      );
+    }
+    
+    if (isCloudy) {
+      return <span className="text-gray-400">☁️</span>;
+    }
+    
+    return null;
+  };
 
   return (
     <Card
@@ -137,15 +269,7 @@ const Weather = ({ location }: WeatherProps) => {
       cardTheme="blue"
       showSearch={true}
       onSearch={handleSearch}
-      onRefresh={() => {
-        if (location?.lat && location?.lon) {
-          fetchWeather(location.lat, location.lon);
-        } else {
-          // If no location, try to refresh with the current city or default
-          const cityToRefresh = weather?.name || "London";
-          fetchWeatherByCity(cityToRefresh);
-        }
-      }}
+      onRefresh={handleRefresh}
       renderItem={(item, index) => (
         <div key={index}>
           {loading ? (
@@ -250,7 +374,7 @@ const Weather = ({ location }: WeatherProps) => {
                     </div>
 
                     {/* Weather Details Grid */}
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                       <div>
                         <p className="text-xs text-gray-300">Feels Like</p>
                         <p>{Math.round(item.main.feels_like)}°C</p>
@@ -286,7 +410,7 @@ const Weather = ({ location }: WeatherProps) => {
                         Next 12 Hours
                       </h4>
                       <div className="grid grid-cols-2 justify-evenly sm:grid-cols-4 gap-x-2 gap-y-4 sm:gap-4 pb-2 ">
-                        {hourlyForecast?.list?.map(
+                        {hourlyForecast?.map(
                           (hour: ForecastEntry, idx: number) => {
                             const date = new Date(hour.dt * 1000);
                             return (
@@ -297,7 +421,7 @@ const Weather = ({ location }: WeatherProps) => {
                               >
                                 <span className="text-xs font-medium">
                                   {date.toLocaleTimeString([], {
-                                    hour: "numeric",
+                                    hour: "2-digit",
                                     minute: "2-digit",
                                     hour12: true,
                                   })}
@@ -325,13 +449,13 @@ const Weather = ({ location }: WeatherProps) => {
               </div>
 
               {/* 5-Day Forecast */}
-              {forecast?.list && forecast.list.length > 0 && (
+              {forecast && forecast.length > 0 && (
                 <div className="mt-4 pt-3 border-t border-gray-200">
                   <h4 className="text-sm font-semibold text-gray-300 mb-2">
                     5-Day Forecast
                   </h4>
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-1 text-xs">
-                    {forecast.list.map((day: ForecastEntry, index: number) => (
+                    {forecast.map((day: ForecastEntry, index: number) => (
                       <div
                         key={index}
                         className="flex flex-col items-center tooltip tooltip-bottom tooltip-info gap-2"
