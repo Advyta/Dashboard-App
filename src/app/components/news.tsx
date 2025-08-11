@@ -5,13 +5,11 @@ import { RootState } from "@/lib/store";
 import Card from "@/ui/card";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpRightFromSquare,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNews } from "@/lib/hooks/api/useNews";
 import Loading from "@/ui/loading";
 import Button from "@/ui/button";
+import { DEFAULT_COUNTRY } from "@/lib/config/constants";
 
 /**
  * Project: Dashboard App
@@ -60,7 +58,6 @@ import Button from "@/ui/button";
  * - External news API for article data
  */
 
-
 const News: React.FC = () => {
   const countryCode = useSelector((state: RootState) => state.user.countryCode);
   const {
@@ -68,12 +65,10 @@ const News: React.FC = () => {
     isLoading,
     error,
     refetch,
-  } = useNews(countryCode || "us");
+  } = useNews(countryCode || DEFAULT_COUNTRY);
 
   if (isLoading) {
-    return (
-      <Loading message="Loading news..." />
-    );
+    return <Loading message="Loading news..." />;
   }
 
   if (error) {

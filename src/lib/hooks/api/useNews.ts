@@ -5,7 +5,7 @@ export function useNews(countryCode?: string) {
   return useQuery<newsArticle[]>({
     queryKey: ['news', countryCode],
     queryFn: async () => {
-      const response = await fetch(`/api/users/news?country=${countryCode || 'us'}`);
+      const response = await fetch(`/api/users/news?country=${countryCode}`);
       if (!response.ok) {
         throw new Error('Failed to fetch news');
       }

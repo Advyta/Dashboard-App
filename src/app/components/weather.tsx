@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "@/ui/card";
 import { Location as BaseLocation, ForecastEntry, CurrentWeatherResponse, ForecastWeatherResponse } from "@/lib/types";
-import { useWeather } from "@/lib/hooks/useWeather";
+import { useWeather } from "@/lib/hooks/api/useWeather";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
@@ -177,90 +177,6 @@ const Weather = ({ location }: WeatherProps) => {
 
   if (loading) return <div>Loading weather...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-
-  // Format forecast date
-  const formatForecastDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString('en-US', { weekday: 'short' });
-  };
-
-  // Type guard to check if the forecast data is valid
-  const isValidForecastData = (data: any): data is ForecastWeatherResponse => {
-    return data && Array.isArray(data.list) && data.list.length > 0;
-  };
-
-  // Get daily forecast from hourly data
-  const getDailyForecast = (forecastData: ForecastWeatherResponse | null | undefined): ForecastDay[] => {
-    if (!forecastData || !isValidForecastData(forecastData)) return [];
-    
-    const dailyForecast: ForecastDay[] = [];
-    const processedDays = new Set<string>();
-    
-    forecastData.list.forEach((entry) => {
-      const date = new Date(entry.dt * 1000).toLocaleDateString();
-      if (!processedDays.has(date)) {
-        dailyForecast.push({
-          dt: entry.dt,
-          main: {
-            temp: entry.main.temp,
-            feels_like: entry.main.feels_like,
-            temp_min: entry.main.temp_min,
-            temp_max: entry.main.temp_max,
-            pressure: entry.main.pressure,
-            humidity: entry.main.humidity,
-          },
-          weather: entry.weather.map(w => ({
-            id: w.id,
-            main: w.main,
-            description: w.description,
-            icon: w.icon,
-          })),
-          clouds: { all: entry.clouds?.all || 0 },
-          wind: {
-            speed: entry.wind?.speed || 0,
-            deg: entry.wind?.deg || 0,
-            gust: entry.wind?.gust,
-          },
-          visibility: entry.visibility || 0,
-          pop: (entry as any).pop || 0,
-          rain: (entry as any).rain,
-          sys: {
-            pod: (entry as any).sys?.pod || 'd',
-          },
-          dt_txt: (entry as any).dt_txt || new Date(entry.dt * 1000).toISOString(),
-        });
-        processedDays.add(date);
-      }
-    });
-    
-    return dailyForecast.slice(0, 5);
-  };
-
-  // Get current day's forecast
-  const currentDayForecast = forecast && !Array.isArray(forecast) ? getDailyForecast(forecast) : [];
-
-  // Get weather icon based on time of day and weather condition
-  const getWeatherIcon = (weather: CurrentWeatherResponse | null, isDaytime = true) => {
-    if (!weather?.weather?.[0]) return null;
-    
-    const weatherId = weather.weather[0].id;
-    const isClear = weatherId === 800;
-    const isCloudy = weatherId > 800;
-    
-    if (isClear) {
-      return isDaytime ? (
-        <FontAwesomeIcon icon={faSun} className="text-yellow-400" />
-      ) : (
-        <FontAwesomeIcon icon={faMoon} className="text-blue-200" />
-      );
-    }
-    
-    if (isCloudy) {
-      return <span className="text-gray-400">☁️</span>;
-    }
-    
-    return null;
-  };
 
   return (
     <Card

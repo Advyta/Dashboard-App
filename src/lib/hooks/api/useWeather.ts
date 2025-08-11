@@ -1,6 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 import { CurrentWeatherResponse, ForecastWeatherResponse } from "@/lib/types";
-import axios from 'axios';
+import { ForecastEntry } from "@/lib/types";
+import axios from "axios";
 
 interface WeatherData {
   current: CurrentWeatherResponse;
@@ -17,8 +19,8 @@ interface WeatherData {
 
 interface UseCombinedWeatherReturn {
   weather: CurrentWeatherResponse | null;
-  forecast: any[] | null;
-  hourlyForecast: any[] | null;
+  forecast: ForecastEntry[] | null;
+  hourlyForecast: ForecastEntry[] | null;
   location: {
     name: string;
     coord: {
@@ -29,37 +31,54 @@ interface UseCombinedWeatherReturn {
   } | null;
   loading: boolean;
   error: string | null;
-  refetch: () => void;
+  refetch: UseQueryResult<WeatherData, Error>["refetch"];
 }
 
 export function useWeather() {
-  const fetchWeather = async (lat: number, lon: number): Promise<WeatherData> => {
+  const fetchWeather = async (
+    lat: number,
+    lon: number
+  ): Promise<WeatherData> => {
     try {
-      const { data } = await axios.get<WeatherData>(`/api/users/weather?lat=${lat}&lon=${lon}`);
+      const { data } = await axios.get<WeatherData>(
+        `/api/users/weather?lat=${lat}&lon=${lon}`
+      );
       return data;
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "Failed to fetch weather data";
+      const errorMessage =
+        error.response?.data?.error || "Failed to fetch weather data";
       throw new Error(errorMessage);
     }
   };
 
   const fetchWeatherByCity = async (city: string): Promise<WeatherData> => {
-    if (!city.trim()) throw new Error('City name is required');
-    
+    if (!city.trim()) throw new Error("City name is required");
+
     try {
-      const { data } = await axios.get<WeatherData>(`/api/users/weather?city=${encodeURIComponent(city)}`);
+      const { data } = await axios.get<WeatherData>(
+        `/api/users/weather?city=${encodeURIComponent(city)}`
+      );
       return data;
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "Failed to fetch weather data for the specified city";
+      const errorMessage =
+        error.response?.data?.error ||
+        "Failed to fetch weather data for the specified city";
       throw new Error(errorMessage);
     }
   };
 
-  const useWeatherByCoords = (lat: number | null, lon: number | null, enabled = true) => {
+  const useWeatherByCoords = (
+    lat: number | null,
+    lon: number | null,
+    enabled = true
+  ) => {
     return useQuery<WeatherData, Error>({
-      queryKey: ['weather', 'coords', { lat, lon }],
-      queryFn: () => lat && lon ? fetchWeather(lat, lon) : Promise.reject(new Error('Missing coordinates')),
-      enabled: Boolean(lat && lon && enabled),
+      queryKey: ["weather", "coords", { lat, lon }],
+      queryFn: () =>
+        lat !== null && lon !== null
+          ? fetchWeather(lat, lon)
+          : Promise.reject(new Error("Missing coordinates")),
+      enabled: Boolean(lat !== null && lon !== null && enabled),
       refetchOnWindowFocus: false,
       retry: 1,
     });
@@ -67,7 +86,7 @@ export function useWeather() {
 
   const useWeatherByCity = (city: string, enabled = true) => {
     return useQuery<WeatherData, Error>({
-      queryKey: ['weather', 'city', { city }],
+      queryKey: ["weather", "city", { city }],
       queryFn: () => fetchWeatherByCity(city),
       enabled: Boolean(city && enabled),
       refetchOnWindowFocus: false,
@@ -78,18 +97,19 @@ export function useWeather() {
   // Helper function to get daily forecast (one entry per day)
   const getDailyForecast = (forecastData: ForecastWeatherResponse | null) => {
     if (!forecastData?.list) return [];
-    
-    const dailyForecast: any[] = [];
+    const dailyForecast: ForecastEntry[] = [];
     const processedDays = new Set<string>();
-    
-    forecastData.list.forEach((entry: any) => {
-      const date = new Date(entry.dt * 1000).toLocaleDateString();
-      if (!processedDays.has(date)) {
+    forecastData.list.forEach((entry: ForecastEntry) => {
+      const d = new Date(entry.dt * 1000);
+      // Get YYYY-MM-DD in UTC
+      const dateKey = `${d.getUTCFullYear()}-${String(
+        d.getUTCMonth() + 1
+      ).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+      if (!processedDays.has(dateKey)) {
         dailyForecast.push(entry);
-        processedDays.add(date);
+        processedDays.add(dateKey);
       }
     });
-    
     return dailyForecast.slice(0, 5); // Return next 5 days
   };
 
@@ -100,8 +120,12 @@ export function useWeather() {
   };
 
   // Create a hook that combines weather and forecast data
-  const useCombinedWeather = (lat: number | null, lon: number | null, city?: string): UseCombinedWeatherReturn => {
-    const { data, isLoading, error, refetch } = city 
+  const useCombinedWeather = (
+    lat: number | null,
+    lon: number | null,
+    city?: string
+  ): UseCombinedWeatherReturn => {
+    const { data, isLoading, error, refetch } = city
       ? useWeatherByCity(city, !!city)
       : useWeatherByCoords(lat, lon, !city);
 

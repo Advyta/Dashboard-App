@@ -56,7 +56,7 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
         const response = await axios.post("/api/users/login", data);
-        console.log("Login successful!", response.data);
+      
         // Set the user in the Redux store
         dispatch(setUser(response.data.user));
 
